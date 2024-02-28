@@ -8,6 +8,7 @@ import {
 } from "firebase/auth";
 import { setDoc, doc, serverTimestamp } from "firebase/firestore";
 import { db } from "../../firebase.config";
+import { OAuth } from "../../components/oauth/OAuth";
 import ArrowRightIcon from "../../assets/svg/keyboardArrowRightIcon.svg?react";
 import visibilityIcon from "../../assets/svg/visibilityIcon.svg";
 import { TSignIn } from "../sign-in/SignIn";
@@ -115,6 +116,9 @@ const SignUp = () => {
               </button>
             </div>
           </form>
+
+          <OAuth />
+
           <Link to="/sign-in" className="registerLink">
             sign in instead
           </Link>
