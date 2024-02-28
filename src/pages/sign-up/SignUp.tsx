@@ -1,5 +1,6 @@
 import { FormEvent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import {
   getAuth,
   createUserWithEmailAndPassword,
@@ -9,14 +10,15 @@ import { setDoc, doc, serverTimestamp } from "firebase/firestore";
 import { db } from "../../firebase.config";
 import ArrowRightIcon from "../../assets/svg/keyboardArrowRightIcon.svg?react";
 import visibilityIcon from "../../assets/svg/visibilityIcon.svg";
-import { SignIn } from "../sign-in/SignIn";
-export type SignUp = SignIn & {
+import { TSignIn } from "../sign-in/SignIn";
+
+export type TSignUp = TSignIn & {
   name: string;
 };
 
 const SignUp = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [formData, setFormData] = useState<SignUp>({
+  const [formData, setFormData] = useState<TSignUp>({
     name: "",
     email: "",
     password: "",
@@ -51,11 +53,11 @@ const SignUp = () => {
         formDataNoPass.timestamp = serverTimestamp();
         await setDoc(doc(db, "users", user.uid), formDataNoPass);
       } else {
-        console.error("No authenticated user found.");
+        toast.error("Something went wrong");
       }
       navigate("/");
     } catch (err) {
-      console.error(err);
+      toast.error("Something went wrong");
     }
   };
 

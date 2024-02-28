@@ -1,16 +1,18 @@
-import { useState } from "react";
+import { FormEvent, useState } from "react";
+import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import ArrowRightIcon from "../../assets/svg/keyboardArrowRightIcon.svg?react";
 import visibilityIcon from "../../assets/svg/visibilityIcon.svg";
 
-export type SignIn = {
+export type TSignIn = {
   email: string;
   password: string;
 };
 
 const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [formData, setFormData] = useState<SignIn>({
+  const [formData, setFormData] = useState<TSignIn>({
     email: "",
     password: "",
   });
@@ -25,6 +27,23 @@ const SignIn = () => {
     }));
   };
 
+  const onSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+
+    try {
+      const auth = getAuth();
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      if (userCredential.user) {
+        navigate("/");
+      }
+    } catch (err) {
+      toast.error("Wrong user credentials");
+    }
+  };
   return (
     <>
       <div className="pageContainer">
@@ -33,7 +52,7 @@ const SignIn = () => {
         </header>
 
         <main>
-          <form>
+          <form onSubmit={onSubmit}>
             <input
               type="email"
               className="emailInput"
@@ -60,7 +79,7 @@ const SignIn = () => {
               />
             </div>
 
-            <Link to="forgot-password" className="forgotPasswordLink">
+            <Link to="/forgot-password" className="forgotPasswordLink">
               Forgot Password?
             </Link>
 
