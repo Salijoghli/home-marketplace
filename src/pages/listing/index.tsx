@@ -7,6 +7,10 @@ import { Spinner } from "../../components/loading-spinner/Spinner";
 import shareIcon from "../../assets/svg/shareIcon.svg";
 import { Data } from "../../components/listing-item/ListingItem";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
+import { Navigation, Pagination, Scrollbar, A11y } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
+
+import "swiper/swiper-bundle.css";
 
 const defaultListing: Data = {
   bathrooms: 1,
@@ -51,7 +55,27 @@ const Listing = () => {
 
   return (
     <main>
-      {/* SLIDER */}
+      <Swiper
+        slidesPerView={1}
+        pagination={{ clickable: true }}
+        modules={[Navigation, Pagination, Scrollbar, A11y]}
+      >
+        {listing.imgUrls.map((url, index) => (
+          <SwiperSlide key={index}>
+            <img
+              src={url}
+              style={{
+                objectFit: "cover",
+                objectPosition: "center",
+                height: "100%",
+                maxHeight: "400px",
+                width: "100%",
+              }}
+            />
+          </SwiperSlide>
+        ))}
+      </Swiper>
+
       <div
         className="shareIconDiv"
         onClick={() => {
