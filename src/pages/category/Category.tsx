@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import {
   collection,
   query,
@@ -16,9 +17,10 @@ import {
   Listings,
   Data,
 } from "../../components/listing-item/ListingItem";
-const Offers = () => {
+const Category = () => {
   const [listings, setListings] = useState<Listings>([]);
   const [loading, setLoading] = useState(true);
+  const params = useParams();
 
   useEffect(() => {
     const fetchListings = async () => {
@@ -29,9 +31,9 @@ const Offers = () => {
         //query
         const q = query(
           listingsRef,
-          where("offer", "==", true),
-          orderBy("timestamp", "desc")
-          // limit(10)
+          where("type", "==", params.categoryName),
+          orderBy("timestamp", "desc"),
+          limit(10)
         );
         const querySnap = await getDocs(q);
         const listings: Listings = [];
@@ -48,12 +50,16 @@ const Offers = () => {
       }
     };
     fetchListings();
-  }, []);
+  }, [params.categoryName]);
 
   return (
     <div className="category">
       <header>
-        <p className="pageHeader">offers</p>
+        <p className="pageHeader">
+          {params.categoryName === "rent"
+            ? "Places for rent"
+            : "Places for sale"}
+        </p>
       </header>
 
       {loading ? (
@@ -69,10 +75,10 @@ const Offers = () => {
           </main>
         </>
       ) : (
-        <p>No current offers</p>
+        <p>No listings for {params.categoryName}</p>
       )}
     </div>
   );
 };
 
-export default Offers;
+export default Category;
