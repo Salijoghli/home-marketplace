@@ -6,6 +6,7 @@ import { db } from "../../firebase.config";
 import { Spinner } from "../../components/loading-spinner/Spinner";
 import shareIcon from "../../assets/svg/shareIcon.svg";
 import { Data } from "../../components/listing-item/ListingItem";
+import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 
 const defaultListing: Data = {
   bathrooms: 1,
@@ -31,6 +32,8 @@ const Listing = () => {
   const navigate = useNavigate();
   const { listingId } = useParams();
   const auth = getAuth();
+
+  const position = listing.geoLocation;
 
   useEffect(() => {
     const fetchListing = async () => {
@@ -92,6 +95,22 @@ const Listing = () => {
           <li>{listing.furnished && "Furnished"}</li>
         </ul>
         <p className="listingLocationTitle">{listing.location}</p>
+        <div className="leafletContainer">
+          <MapContainer
+            center={position}
+            zoom={13}
+            scrollWheelZoom={false}
+            style={{ width: "100%", height: "100%" }}
+          >
+            <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+            <Marker position={position}>
+              <Popup>{listing.location}</Popup>
+            </Marker>
+          </MapContainer>
+        </div>
         {auth.currentUser?.uid !== listing.userRef && (
           <Link
             to={`/contact/${listing.userRef}?listingName=${listing.name}`}
