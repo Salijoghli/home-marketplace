@@ -1,15 +1,14 @@
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { getDoc, doc } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { db } from "../../firebase.config";
 import { Spinner } from "../../components/loading-spinner/Spinner";
-import shareIcon from "../../assets/svg/shareIcon.svg";
 import { Data } from "../../components/listing-item/ListingItem";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import { Navigation, Pagination, Scrollbar, A11y } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
-
+import shareIcon from "../../assets/svg/shareIcon.svg";
 import "swiper/swiper-bundle.css";
 
 const defaultListing: Data = {
@@ -33,7 +32,6 @@ const Listing = () => {
   const [loading, setLoading] = useState(true);
   const [shareLinkCopied, setShareLinkCopied] = useState(false);
 
-  const navigate = useNavigate();
   const { listingId } = useParams();
   const auth = getAuth();
 

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Params, useParams, useSearchParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../firebase.config";
 import { toast } from "react-toastify";
@@ -14,7 +14,7 @@ const Contact = () => {
     email: "",
     name: "",
   });
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
   const { ownerId } = useParams();
 
@@ -22,7 +22,8 @@ const Contact = () => {
     const getOwner = async () => {
       const docRef = doc(db, "users", ownerId!);
       const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) console.log(docSnap.data());
+      if (docSnap.exists()) setOwner(docSnap.data() as Owner);
+      else toast.error("Couldn't get owner data");
     };
     getOwner();
   }, [ownerId]);

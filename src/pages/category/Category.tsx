@@ -4,7 +4,6 @@ import {
   collection,
   query,
   where,
-  startAfter,
   orderBy,
   limit,
   getDocs,
