@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/ReactToastify.css";
 import { Navbar } from "./components/navbar/Navbar";
@@ -40,6 +45,7 @@ function App() {
             element={<Listing />}
           />
           <Route path="/contact/:ownerId" element={<Contact />} />
+          <Route path="*" element={<Navigate to={"/"} />} />
         </Routes>
 
         <Navbar />
