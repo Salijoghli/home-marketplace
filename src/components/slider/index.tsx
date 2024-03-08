@@ -12,7 +12,6 @@ export const Slider = () => {
   const [listings, setListings] = useState<Listings>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-
   useEffect(() => {
     const fetchListings = async () => {
       try {
@@ -37,7 +36,7 @@ export const Slider = () => {
   if (loading) return <Spinner />;
 
   return (
-    listings.length > 1 && (
+    listings.length > 0 && (
       <>
         <p className="exploreHeading">Recommended</p>
         <Swiper

@@ -65,7 +65,6 @@ const Profile = () => {
     fetchUserListings();
   }, [auth.currentUser?.uid]);
 
-  console.log(listings);
   const onLogut = () => {
     auth.signOut();
     navigate("/");
@@ -119,44 +118,53 @@ const Profile = () => {
         </button>
       </header>
       <main>
-        <div className="profileDetailsHeader">
-          <p className="profileDetailsText">Personal Details</p>
-          <p
-            className="changePersonalDetails"
-            onClick={() => {
-              changeDetails && onSubmit();
-              setChangeDetails((prev) => !prev);
-            }}
-          >
-            {changeDetails ? "done" : "change"}
-          </p>
-        </div>
+        <div
+          style={{
+            maxWidth: "800px",
+            margin: "0 auto",
+          }}
+        >
+          <div className="profileDetailsHeader">
+            <p className="profileDetailsText">Personal Details</p>
+            <p
+              className="changePersonalDetails"
+              onClick={() => {
+                changeDetails && onSubmit();
+                setChangeDetails((prev) => !prev);
+              }}
+            >
+              {changeDetails ? "done" : "change"}
+            </p>
+          </div>
 
-        <div className="profileCard">
-          <form>
-            <input
-              type="text"
-              id="name"
-              className={changeDetails ? "profileName" : "profileNameActive"}
-              disabled={!changeDetails}
-              value={name}
-              onChange={onChange}
-            />
-            <input
-              type="email"
-              id="email"
-              className={changeDetails ? "profileEmail" : "profileEmailActive"}
-              disabled={!changeDetails}
-              value={email}
-              onChange={onChange}
-            />
-          </form>
+          <div className="profileCard">
+            <form>
+              <input
+                type="text"
+                id="name"
+                className={changeDetails ? "profileName" : "profileNameActive"}
+                disabled={!changeDetails}
+                value={name}
+                onChange={onChange}
+              />
+              <input
+                type="email"
+                id="email"
+                className={
+                  changeDetails ? "profileEmail" : "profileEmailActive"
+                }
+                disabled={!changeDetails}
+                value={email}
+                onChange={onChange}
+              />
+            </form>
+          </div>
+          <Link to="/create-listing" className="createListing">
+            <img src={homeIcon} alt="home" />
+            <p>Sell or rent</p>
+            <img src={arrowRight} alt="arrow right" />
+          </Link>
         </div>
-        <Link to="/create-listing" className="createListing">
-          <img src={homeIcon} alt="home" />
-          <p>Sell or rent</p>
-          <img src={arrowRight} alt="arrow right" />
-        </Link>
 
         {!loading && listings.length > 0 && (
           <>
