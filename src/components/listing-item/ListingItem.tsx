@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import DeleteIcon from "../../assets/svg/deleteIcon.svg?react";
+import EditIcon from "../../assets/svg/editIcon.svg?react";
 import bedIcon from "../../assets//svg/bedIcon.svg";
 import bathtubIcon from "../../assets//svg/bathtubIcon.svg";
 
@@ -29,12 +30,13 @@ export type Data = {
 export type Listing = {
   id: string;
   data: Data;
-  onDelete?: (id: string, name: string) => void;
+  onDelete?: (id: string) => void;
+  onEdit?: (id: string) => void;
 };
 
 export type Listings = Array<Listing>;
 
-export const ListingItem = ({ data, id, onDelete }: Listing) => {
+export const ListingItem = ({ data, id, onDelete, onEdit }: Listing) => {
   return (
     <li className="categoryListing">
       <Link to={`/category/${data.type}/${id}`} className="categoryListingLink">
@@ -69,10 +71,11 @@ export const ListingItem = ({ data, id, onDelete }: Listing) => {
           className="removeIcon"
           fill="rgb(231,76,60)"
           onClick={() => {
-            onDelete(id, data.name);
+            onDelete(id);
           }}
         />
       )}
+      {onEdit && <EditIcon className="editIcon" onClick={() => onEdit(id)} />}
     </li>
   );
 };

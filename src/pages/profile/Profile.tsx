@@ -1,18 +1,34 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { TSignUp } from "../sign-up/SignUp";
 import { getAuth, updateProfile } from "firebase/auth";
-import { doc, updateDoc } from "firebase/firestore";
+import {
+  doc,
+  updateDoc,
+  collection,
+  getDocs,
+  query,
+  where,
+  orderBy,
+  deleteDoc,
+} from "firebase/firestore";
 import { db } from "../../firebase.config";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import arrowRight from "../../assets/svg/keyboardArrowRightIcon.svg";
 import homeIcon from "../../assets/svg/homeIcon.svg";
+import {
+  Data,
+  ListingItem,
+  Listings,
+} from "../../components/listing-item/ListingItem";
 
 export type TProfile = Omit<TSignUp, "password">;
 
 const Profile = () => {
   const auth = getAuth();
   const [changeDetails, setChangeDetails] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [listings, setListings] = useState<Listings>([]);
   const [profile, setProfile] = useState<TProfile>({
     name: auth.currentUser?.displayName ?? "",
     email: auth.currentUser?.email ?? "",
@@ -22,6 +38,34 @@ const Profile = () => {
 
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const fetchUserListings = async () => {
+      try {
+        const listingsRef = collection(db, "listings");
+        const q = query(
+          listingsRef,
+          where("userRef", "==", auth.currentUser?.uid),
+          orderBy("timestamp", "desc")
+        );
+        const docSnap = await getDocs(q);
+        const listings: Listings = [];
+        docSnap.forEach((doc) => {
+          listings.push({
+            id: doc.id,
+            data: doc.data() as Data,
+          });
+        });
+        setListings(listings);
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+        toast.error("Could't get your listings");
+      }
+    };
+    fetchUserListings();
+  }, [auth.currentUser?.uid]);
+
+  console.log(listings);
   const onLogut = () => {
     auth.signOut();
     navigate("/");
@@ -51,6 +95,19 @@ const Profile = () => {
       ...prevState,
       [e.target.id]: e.target.value,
     }));
+  };
+
+  const onDelete = async (id: string) => {
+    if (window.confirm("Are you sure you want to remove it?")) {
+      try {
+        await deleteDoc(doc(db, "listings", id));
+        const updatedListings = listings.filter((listing) => listing.id !== id);
+        setListings(updatedListings);
+        toast.success("Successfully deleted");
+      } catch (error) {
+        toast.error("Couldn't delete the listing");
+      }
+    }
   };
 
   return (
@@ -100,6 +157,22 @@ const Profile = () => {
           <p>Sell or rent</p>
           <img src={arrowRight} alt="arrow right" />
         </Link>
+
+        {!loading && listings.length > 0 && (
+          <>
+            <p className="listingText">Your listings</p>
+            <ul className="listingsList">
+              {listings.map((listing) => (
+                <ListingItem
+                  key={listing.id}
+                  {...listing}
+                  onDelete={() => onDelete(listing.id)}
+                  onEdit={() => navigate(`/edit-listing/${listing.id}`)}
+                />
+              ))}
+            </ul>
+          </>
+        )}
       </main>
     </div>
   );
