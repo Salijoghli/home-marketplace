@@ -45,7 +45,7 @@ function App() {
             element={<Listing />}
           />
           <Route path="/contact/:ownerId" element={<Contact />} />
-          <Route path="*" element={<Navigate to={"/"} />} />
+          <Route path="/*" element={<Navigate to={"/"} replace />} />
         </Routes>
 
         <Navbar />
